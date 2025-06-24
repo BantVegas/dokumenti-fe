@@ -1,0 +1,9 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .glass-card {
+    @apply bg-glass-bg backdrop-blur-xl rounded-2xl shadow-glass border border-glass-border opacity-90;
+  }
+}
