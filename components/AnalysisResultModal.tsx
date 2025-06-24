@@ -3,7 +3,8 @@
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 
-interface AnalysisResultData {
+// Presný typ analýzy podľa uploadu
+export interface AnalysisResultData {
   typ: string;
   zhodnotenie: string;
   rizika: string;
@@ -38,12 +39,14 @@ export default function AnalysisResultModal({
         throw new Error(`Server vrátil ${res.status}`);
       }
       setSaved(true);
-      // Po krátkej pauze presmerujeme užívateľa na dashboard
       setTimeout(() => {
         router.push("/dashboard");
       }, 500);
-    } catch (err: any) {
-      alert("Chyba pri ukladaní analýzy: " + err.message);
+    } catch (err) {
+      alert(
+        "Chyba pri ukladaní analýzy: " +
+          (err instanceof Error ? err.message : String(err))
+      );
     } finally {
       setLoading(false);
     }

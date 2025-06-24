@@ -31,7 +31,6 @@ export default function SplnomocneniePage() {
     ucel: "",
   });
 
-  // Typovanie eventu umožňuje <input>, <textarea> aj <select>
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
@@ -54,7 +53,7 @@ export default function SplnomocneniePage() {
       link.click();
       // Odstrániť link z DOMu po kliknutí
       document.body.removeChild(link);
-    } catch (_error) {
+    } catch {
       alert("Chyba pri generovaní PDF");
     }
   };
@@ -168,6 +167,7 @@ export default function SplnomocneniePage() {
     </main>
   );
 }
+
 
 
 

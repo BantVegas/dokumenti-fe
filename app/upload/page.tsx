@@ -7,13 +7,24 @@ import { motion } from "framer-motion";
 import Header from "@/components/ui/Header";
 import AnalysisResultModal from "@/components/AnalysisResultModal";
 
+// Typovanie výsledku analýzy
+interface AnalysisResult {
+  typ: string;
+  zhodnotenie: string;
+  rizika: string;
+  odporucania: string;
+  zaver: string;
+  jazyk: string;
+}
+
 export default function UploadPage() {
   const [file, setFile] = useState<File | null>(null);
-  const [result, setResult] = useState<any | null>(null);
+  const [result, setResult] = useState<AnalysisResult | null>(null);
   const [loading, setLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
+  // Drag & Drop
   const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
@@ -22,6 +33,7 @@ export default function UploadPage() {
     }
   };
 
+  // Upload handler (bez any, bez warningov)
   const handleUpload = async () => {
     if (!file) return;
     setLoading(true);
@@ -36,7 +48,6 @@ export default function UploadPage() {
       });
       const data = await res.json();
 
-      // Tu sa mení mapovanie z snake_case na tvoje slovenské polia:
       setResult({
         typ: data.document_type,
         zhodnotenie: data.legal_evaluation,
@@ -46,7 +57,7 @@ export default function UploadPage() {
         jazyk: data.language,
       });
       setShowModal(true);
-    } catch (error) {
+    } catch {
       setResult({
         typ: "Chyba",
         zhodnotenie: "Nepodarilo sa nahrať dokument alebo spracovať odpoveď.",
@@ -59,6 +70,11 @@ export default function UploadPage() {
     } finally {
       setLoading(false);
     }
+  };
+
+  // File change handler - správne typovanie
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFile(e.target.files?.[0] || null);
   };
 
   return (
@@ -122,7 +138,7 @@ export default function UploadPage() {
               type="file"
               accept=".pdf,.docx"
               className="hidden"
-              onChange={(e) => setFile(e.target.files?.[0] || null)}
+              onChange={handleFileChange}
             />
 
             <Button

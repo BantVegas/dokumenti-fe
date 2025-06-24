@@ -3,11 +3,18 @@
 import * as DialogPrimitive from "@radix-ui/react-dialog";
 import { X } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { ReactNode, HTMLAttributes } from "react";
+
+// Forwarduj className a ostatné HTML props
+interface DialogContentProps extends HTMLAttributes<HTMLDivElement> {
+  children: ReactNode;
+  className?: string;
+}
 
 export const Dialog = DialogPrimitive.Root;
 export const DialogTrigger = DialogPrimitive.Trigger;
 
-export function DialogContent({ children, className, ...props }: any) {
+export function DialogContent({ children, className = "", ...props }: DialogContentProps) {
   return (
     <DialogPrimitive.Portal>
       <DialogPrimitive.Overlay className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40" />
@@ -33,10 +40,10 @@ export function DialogContent({ children, className, ...props }: any) {
   );
 }
 
-export const DialogHeader = ({ children }: { children: React.ReactNode }) => (
+export const DialogHeader = ({ children }: { children: ReactNode }) => (
   <div className="mb-4">{children}</div>
 );
 
-export const DialogTitle = ({ children }: { children: React.ReactNode }) => (
+export const DialogTitle = ({ children }: { children: ReactNode }) => (
   <h2 className="text-xl font-bold text-gray-900">{children}</h2>
 );
