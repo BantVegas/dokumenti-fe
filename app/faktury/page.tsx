@@ -4,6 +4,23 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { ArrowDownToLine, Pencil, Trash2, Send } from "lucide-react";
 
+// Typ pre jednu faktúru
+interface Faktura {
+  id: number;
+  cisloFaktury: string;
+  odberatelMeno: string;
+  datumSplatnosti?: string;
+  polozky?: FakturaPolozka[];
+  stav?: "Zaplatené" | "Nezaplatené" | "Po splatnosti" | string;
+}
+
+interface FakturaPolozka {
+  celkom?: number;
+  cena?: number;
+  pocet?: number;
+  // môžeš pridať ďalšie polia podľa backendu
+}
+
 // NAVBAR komponent
 function Navbar() {
   return (
@@ -17,21 +34,21 @@ function Navbar() {
           <Link href="/upload"><button className="px-4 py-1 rounded-xl text-white hover:bg-white/30 transition">Nahrať</button></Link>
           <Link href="/generator"><button className="px-4 py-1 rounded-xl text-white hover:bg-white/30 transition">Vytvoriť</button></Link>
           <Link href="/dashboard"><button className="px-4 py-1 rounded-xl text-white hover:bg-white/30 transition">Dashboard</button></Link>
-          <Link href="https://universalkalkulacka.sk/" target="_blank"><button className="px-4 py-1 rounded-xl text-white hover:bg-white/30 transition">Kalkulačka</button></Link>
+          <Link href="https://univerzalkalkulacka.sk/" target="_blank"><button className="px-4 py-1 rounded-xl text-white hover:bg-white/30 transition">Kalkulačka</button></Link>
         </div>
       </div>
     </nav>
   );
 }
 
-const STAVY = {
+const STAVY: Record<string, string> = {
   "Zaplatené": "text-green-600 font-semibold",
   "Nezaplatené": "text-yellow-500 font-semibold",
   "Po splatnosti": "text-red-600 font-semibold",
 };
 
 const FakturyPage = () => {
-  const [faktury, setFaktury] = useState([]);
+  const [faktury, setFaktury] = useState<Faktura[]>([]);
   const [search, setSearch] = useState("");
   const [stav, setStav] = useState("Všetky stavy");
   const [loading, setLoading] = useState(false);
@@ -40,10 +57,9 @@ const FakturyPage = () => {
   const fetchFaktury = async () => {
     setLoading(true);
     try {
-      const res = await axios.get("/api/faktury");
+      const res = await axios.get<Faktura[]>("/api/faktury");
       setFaktury(res.data);
-    } catch (e) {
-      // error handling
+    } catch {
       setFaktury([]);
     }
     setLoading(false);
@@ -51,10 +67,11 @@ const FakturyPage = () => {
 
   useEffect(() => {
     fetchFaktury();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Vyhľadávanie a filtrovanie
-  const filteredFaktury = faktury.filter((f: any) => {
+  const filteredFaktury = faktury.filter((f) => {
     const matchSearch =
       f.cisloFaktury?.toLowerCase().includes(search.toLowerCase()) ||
       f.odberatelMeno?.toLowerCase().includes(search.toLowerCase());
@@ -66,14 +83,13 @@ const FakturyPage = () => {
   // Formát dátumu
   function formatDate(dateStr?: string) {
     if (!dateStr) return "";
-    // podporuje ISO aj yyyy-MM-dd
     const d = new Date(dateStr);
     return d.toLocaleDateString("sk-SK");
   }
 
   // SUMA faktúry
-  function sumaFaktury(polozky: any[] = []) {
-    return polozky.reduce((sum, p) => sum + (p.celkom ?? (p.cena * p.pocet)), 0).toFixed(2);
+  function sumaFaktury(polozky: FakturaPolozka[] = []) {
+    return polozky.reduce((sum, p) => sum + (p.celkom ?? ((p.cena ?? 0) * (p.pocet ?? 1))), 0).toFixed(2);
   }
 
   // DELETE faktúry (voliteľné)
@@ -137,7 +153,7 @@ const FakturyPage = () => {
                   <tr><td colSpan={6} className="text-center p-8">Načítavam...</td></tr>
                 ) : filteredFaktury.length === 0 ? (
                   <tr><td colSpan={6} className="text-center p-8">Žiadne faktúry</td></tr>
-                ) : filteredFaktury.map((f: any) => (
+                ) : filteredFaktury.map((f) => (
                   <tr key={f.id} className="hover:bg-white/80 transition">
                     <td className="px-4 py-2">
                       <Link href={`/faktury/${f.id}`}>
@@ -146,12 +162,10 @@ const FakturyPage = () => {
                     </td>
                     <td className="px-4 py-2">{f.odberatelMeno}</td>
                     <td className="px-4 py-2">{formatDate(f.datumSplatnosti)}</td>
-                    <td className="px-4 py-2">{sumaFaktury(f.polozky)} €</td>
-                    <td className={`px-4 py-2 ${STAVY[f.stav as keyof typeof STAVY] ?? ""}`}>
-                    {f.stav || "Nezaplatené"}
+                    <td className="px-4 py-2">{sumaFaktury(f.polozky ?? [])} €</td>
+                    <td className={`px-4 py-2 ${STAVY[f.stav ?? "Nezaplatené"] ?? ""}`}>
+                      {f.stav || "Nezaplatené"}
                     </td>
-
-
                     <td className="px-4 py-2 flex gap-2">
                       <Link href={`/faktury/${f.id}`}>
                         <button title="Zobraziť detail" className="hover:text-blue-700">

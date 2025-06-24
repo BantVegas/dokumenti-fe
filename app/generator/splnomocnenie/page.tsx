@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import { useState } from "react";
 import axios from "axios";
 
-// Typovanie pre form data (ak chceš presnejšie typy, môžeš exportovať a použiť aj inde)
+// Typovanie pre form data
 interface SplnomocnenieFormData {
   meno: string;
   priezvisko: string;
@@ -54,7 +54,7 @@ export default function SplnomocneniePage() {
       link.click();
       // Odstrániť link z DOMu po kliknutí
       document.body.removeChild(link);
-    } catch (error) {
+    } catch (_error) {
       alert("Chyba pri generovaní PDF");
     }
   };
@@ -168,6 +168,7 @@ export default function SplnomocneniePage() {
     </main>
   );
 }
+
 
 
 
