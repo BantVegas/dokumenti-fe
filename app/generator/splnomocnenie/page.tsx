@@ -5,9 +5,21 @@ import { motion } from "framer-motion";
 import { useState } from "react";
 import axios from "axios";
 
+// Typovanie pre form data (ak chceš presnejšie typy, môžeš exportovať a použiť aj inde)
+interface SplnomocnenieFormData {
+  meno: string;
+  priezvisko: string;
+  datumNarodenia: string;
+  rodneCislo: string;
+  adresa: string;
+  splnomocnenecMeno: string;
+  splnomocnenecDatumNarodenia: string;
+  splnomocnenecAdresa: string;
+  ucel: string;
+}
+
 export default function SplnomocneniePage() {
-  // Zladené názvy fieldov presne podľa SplnomocnenieRequest DTO v Java
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<SplnomocnenieFormData>({
     meno: "",
     priezvisko: "",
     datumNarodenia: "",
@@ -16,14 +28,17 @@ export default function SplnomocneniePage() {
     splnomocnenecMeno: "",
     splnomocnenecDatumNarodenia: "",
     splnomocnenecAdresa: "",
-    ucel: ""
+    ucel: "",
   });
 
-  const handleChange = (e) => {
+  // Typovanie eventu umožňuje <input>, <textarea> aj <select>
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
       const response = await axios.post(
@@ -37,6 +52,8 @@ export default function SplnomocneniePage() {
       link.setAttribute("download", "splnomocnenie.pdf");
       document.body.appendChild(link);
       link.click();
+      // Odstrániť link z DOMu po kliknutí
+      document.body.removeChild(link);
     } catch (error) {
       alert("Chyba pri generovaní PDF");
     }
