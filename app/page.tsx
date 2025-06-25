@@ -1,38 +1,45 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { FileText, Upload, Folder, FileSignature, Calculator } from "lucide-react";
+import { FileText, Upload, Folder, FileSignature, Calculator, Menu, X } from "lucide-react";
 
 export default function Home() {
   const pathname = usePathname();
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  const navLinks = [
+    { href: "/onas", label: "O nás" },
+    { href: "/blog", label: "Blog" },
+    { href: "/cennik", label: "Cenník" },
+    { href: "/login", label: "Prihlásenie" },
+  ];
 
   return (
     <main
-      className="min-h-screen flex flex-col justify-between bg-cover bg-center"
+      className="min-h-screen flex flex-col bg-cover bg-center"
       style={{ backgroundImage: "url('/hero.jpg')" }}
     >
       {/* NAVBAR */}
-      <header className="flex justify-between items-center px-6 py-4 bg-white/20 backdrop-blur-md border-b border-white/30 text-white">
-        <h1 className="text-2xl font-bold">
-          <Link href="/">dokumenti.sk</Link>
+      <header className="relative z-30 flex items-center justify-between px-4 sm:px-8 py-4 bg-white/20 backdrop-blur-md border-b border-white/30 text-white">
+        <h1 className="text-2xl font-bold flex items-center gap-2">
+          <FileText className="w-6 h-6 text-white/80" />
+          <Link href="/" className="hover:underline">dokumenti.sk</Link>
         </h1>
-        <nav className="flex gap-6 text-sm font-medium">
-          {[
-            { href: "/about", label: "O nás" },
-            { href: "/blog", label: "Blog" },
-            { href: "/cennik", label: "Cenník" },
-            { href: "/login", label: "Prihlásenie" },
-          ].map(({ href, label }) => {
+
+        {/* Desktop menu */}
+        <nav className="hidden md:flex gap-6 text-base font-medium">
+          {navLinks.map(({ href, label }) => {
             const isActive = pathname === href;
             return (
               <Link
                 key={href}
                 href={href}
-                className={`relative pb-1 transition-colors duration-200 ${
+                className={`relative pb-1 px-1 rounded transition-colors duration-200 ${
                   isActive
-                    ? "text-blue-500 font-semibold after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:bg-blue-500 after:rounded"
-                    : "text-white hover:text-yellow-300 hover:after:absolute hover:after:bottom-0 hover:after:left-0 hover:after:h-[2px] hover:after:w-full hover:after:bg-yellow-300 hover:after:rounded"
+                    ? "text-blue-400 font-bold after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:bg-blue-400 after:rounded"
+                    : "text-white hover:text-yellow-300"
                 }`}
               >
                 {label}
@@ -40,19 +47,51 @@ export default function Home() {
             );
           })}
         </nav>
+
+        {/* Hamburger button - mobile only */}
+        <button
+          className="md:hidden p-2 rounded focus:outline-none"
+          onClick={() => setMenuOpen((v) => !v)}
+          aria-label="Otvoriť menu"
+        >
+          {menuOpen ? <X size={32} /> : <Menu size={32} />}
+        </button>
+
+        {/* Mobile menu */}
+        {menuOpen && (
+          <nav className="absolute top-full left-0 w-full bg-white/90 text-gray-900 flex flex-col gap-2 py-4 px-6 rounded-b-2xl shadow-xl animate-in fade-in z-50">
+            {navLinks.map(({ href, label }) => {
+              const isActive = pathname === href;
+              return (
+                <Link
+                  key={href}
+                  href={href}
+                  className={`py-3 px-2 rounded text-lg font-medium ${
+                    isActive
+                      ? "bg-blue-50 text-blue-600 font-semibold"
+                      : "hover:bg-yellow-50 hover:text-yellow-700"
+                  }`}
+                  onClick={() => setMenuOpen(false)}
+                >
+                  {label}
+                </Link>
+              );
+            })}
+          </nav>
+        )}
       </header>
 
       {/* HERO TEXT */}
-      <div className="text-gray-900 text-center mt-16 px-4">
-        <h2 className="text-5xl font-extrabold mb-4">dokumenti.sk</h2>
-        <p className="text-lg">Vytváraj, nahrávaj a podpisuj dokumenty online s ľahkosťou</p>
+      <div className="text-white text-center mt-16 px-4">
+        <h2 className="text-5xl font-extrabold mb-4 drop-shadow-lg">dokumenti.sk</h2>
+        <p className="text-lg font-medium drop-shadow">Vytváraj, nahrávaj a podpisuj dokumenty online s ľahkosťou</p>
       </div>
 
       {/* HLAVNÉ BOXY */}
-      <div className="flex flex-col items-center gap-6 mt-16 px-4">
-        <div className="flex flex-col md:flex-row gap-6">
+      <div className="flex flex-col items-center gap-6 mt-12 sm:mt-16 px-2 sm:px-4">
+        <div className="flex flex-col md:flex-row gap-6 w-full max-w-6xl">
           {/* Vytvoriť */}
-          <div className="glass-card p-6 w-80 transition-all duration-300 hover:translate-y-[-4px] hover:scale-[1.03] text-gray-900">
+          <div className="glass-card p-6 w-full md:w-80 transition-all duration-300 hover:translate-y-[-4px] hover:scale-[1.03] text-gray-900">
             <div className="flex items-center gap-2 mb-2 font-bold text-lg">
               <FileText className="w-5 h-5 text-orange-400" /> Vytvoriť dokument
             </div>
@@ -63,7 +102,7 @@ export default function Home() {
           </div>
 
           {/* Nahrať */}
-          <div className="glass-card p-6 w-80 transition-all duration-300 hover:translate-y-[-4px] hover:scale-[1.03] text-gray-900">
+          <div className="glass-card p-6 w-full md:w-80 transition-all duration-300 hover:translate-y-[-4px] hover:scale-[1.03] text-gray-900">
             <div className="flex items-center gap-2 mb-2 font-bold text-lg">
               <Upload className="w-5 h-5 text-blue-400" /> Nahrať dokument
             </div>
@@ -74,7 +113,7 @@ export default function Home() {
           </div>
 
           {/* Spravovať */}
-          <div className="glass-card p-6 w-80 transition-all duration-300 hover:translate-y-[-4px] hover:scale-[1.03] text-gray-900">
+          <div className="glass-card p-6 w-full md:w-80 transition-all duration-300 hover:translate-y-[-4px] hover:scale-[1.03] text-gray-900">
             <div className="flex items-center gap-2 mb-2 font-bold text-lg">
               <Folder className="w-5 h-5 text-white" /> Spravovať dokumenty
             </div>
@@ -86,9 +125,9 @@ export default function Home() {
         </div>
 
         {/* Faktúry + Kalkulačka vedľa seba */}
-        <div className="flex flex-col md:flex-row gap-4 mt-2">
+        <div className="flex flex-col md:flex-row gap-4 w-full max-w-4xl mt-2">
           {/* Faktúry */}
-          <div className="glass-card p-6 text-center w-80 transition-all duration-300 hover:translate-y-[-4px] hover:scale-[1.03] text-gray-900 flex flex-col justify-between">
+          <div className="glass-card p-6 text-center w-full md:w-80 transition-all duration-300 hover:translate-y-[-4px] hover:scale-[1.03] text-gray-900 flex flex-col justify-between">
             <div className="flex justify-center items-center gap-2 mb-2 font-bold text-lg">
               <FileSignature className="w-5 h-5 text-amber-400" /> Faktúry
             </div>
@@ -104,7 +143,7 @@ export default function Home() {
             href="https://univerzalkalkulacka.sk/"
             target="_blank"
             rel="noopener noreferrer"
-            className="glass-card p-6 text-center w-80 transition-all duration-300 hover:translate-y-[-4px] hover:scale-[1.03] text-gray-900 flex flex-col justify-between"
+            className="glass-card p-6 text-center w-full md:w-80 transition-all duration-300 hover:translate-y-[-4px] hover:scale-[1.03] text-gray-900 flex flex-col justify-between"
             style={{ textDecoration: "none" }}
           >
             <div className="flex justify-center items-center gap-2 mb-2 font-bold text-lg">
@@ -123,7 +162,7 @@ export default function Home() {
       </div>
 
       {/* FOOTER */}
-      <footer className="text-gray-900/70 text-sm text-center mt-16 mb-6">
+      <footer className="text-gray-900/70 text-sm text-center mt-12 mb-4 sm:mb-6 px-2">
         &copy; 2025 dokumenti.sk – Všetky práva vyhradené
       </footer>
     </main>
