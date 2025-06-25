@@ -26,7 +26,7 @@ export default function NajomnaZmluvaPage() {
     e.preventDefault();
     try {
       const response = await axios.post(
-        "http://localhost:8080/api/generate/najomna-zmluva",
+        "http://api.dokumenti.sk/api/generate/najomna-zmluva",
         formData,
         { responseType: "blob" }
       );

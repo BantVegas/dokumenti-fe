@@ -41,7 +41,7 @@ export default function SplnomocneniePage() {
     e.preventDefault();
     try {
       const response = await axios.post(
-        "http://localhost:8080/api/generate/splnomocnenie",
+        "http://https://api.dokumenti.sk/api/generate/splnomocnenie",
         formData,
         { responseType: "blob" }
       );

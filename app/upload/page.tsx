@@ -42,7 +42,7 @@ export default function UploadPage() {
     formData.append("file", file);
 
     try {
-      const res = await fetch("http://localhost:8080/api/upload", {
+      const res = await fetch("http://api.dokumenti.sk/upload", {
         method: "POST",
         body: formData,
       });

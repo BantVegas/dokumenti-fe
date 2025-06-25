@@ -25,7 +25,7 @@ export default function KupnaZmluvaPage() {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     try {
-      const response = await axios.post("http://localhost:8080/api/generate/kupna-zmluva", formData, {
+      const response = await axios.post("http://api.dokumenti.sk/api/generate/kupna-zmluva", formData, {
         responseType: "blob",
       });
       const url = window.URL.createObjectURL(new Blob([response.data]));
