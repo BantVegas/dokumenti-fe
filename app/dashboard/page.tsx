@@ -21,7 +21,7 @@ export default function DashboardPage() {
   const [generatingId, setGeneratingId] = useState<number | null>(null);
 
   useEffect(() => {
-    fetch("http://localhost:8080/api/analysis")
+    fetch("https://api.dokumenti.sk/api/analysis")
       .then((res) => res.json())
       .then((data) => {
         setHistory(data);
@@ -34,7 +34,7 @@ export default function DashboardPage() {
   }, []);
 
   const handleDelete = async (id: number) => {
-    await fetch(`http://localhost:8080/api/analysis/${id}`, { method: "DELETE" });
+    await fetch(`https://api.dokumenti.sk/api/analysis/${id}`, { method: "DELETE" });
     setHistory((prev) => prev.filter((item) => item.id !== id));
   };
 
@@ -42,7 +42,7 @@ export default function DashboardPage() {
     setGeneratingId(item.id);
     setSelectedResponse(null);
     try {
-      const res = await fetch("http://localhost:8080/api/analysis/response", {
+      const res = await fetch("https://api.dokumenti.sk/api/analysis/response", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(item),

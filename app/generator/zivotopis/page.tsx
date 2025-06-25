@@ -26,7 +26,7 @@ export default function ZivotopisPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const response = await axios.post("http://api.dokumenti.sk/api/generate/zivotopis", formData, {
+      const response = await axios.post("https://api.dokumenti.sk/api/generate/zivotopis", formData, {
         responseType: "blob",
       });
       const url = window.URL.createObjectURL(new Blob([response.data]));

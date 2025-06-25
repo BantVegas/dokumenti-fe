@@ -30,7 +30,7 @@ export default function AnalysisResultModal({
     if (loading || saved) return;
     setLoading(true);
     try {
-      const res = await fetch("http://api.dokumenti.sk/api/analysis", {
+      const res = await fetch("https://api.dokumenti.sk/api/analysis", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),

@@ -24,7 +24,7 @@ export default function VypovedPage() {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     try {
-      const response = await axios.post("http://api.dokumenti.sk/api/generate/vypoved", formData, {
+      const response = await axios.post("https://api.dokumenti.sk/api/generate/vypoved", formData, {
         responseType: "blob",
       });
       const url = window.URL.createObjectURL(new Blob([response.data]));
